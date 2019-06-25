@@ -4,6 +4,13 @@ import App from './App.vue'
 import router from './routers'
 import store from './stores'
 
+import axios from 'axios'
+Vue.prototype.axios = axios
+
+Vue.filter('setWH', (url, arg) => {
+    return url.replace(/w\.h/, arg);  /*正则匹配*/
+});
+
 Vue.config.productionTip = false
 
 new Vue({
