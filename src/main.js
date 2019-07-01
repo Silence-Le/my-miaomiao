@@ -11,10 +11,17 @@ Vue.filter('setWH', (url, arg) => {
     return url.replace(/w\.h/, arg);  /*正则匹配*/
 });
 
+import Scroller from '@/components/Scroller'
+Vue.component('Scroller', Scroller);  /*全局注册*/
+
+import Loading from '@/components/Loading'
+Vue.component('Loading', Loading);  /*全局注册*/
+
 Vue.config.productionTip = false
 
 new Vue({
     router,
     store,
+    // Scroller,
     render: h => h(App)
 }).$mount('#app')

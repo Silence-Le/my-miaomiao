@@ -1,41 +1,41 @@
 <template>
     <div class="city_body">
         <div class="city_list">
-            <!--            <loading v-if="isLoading"/>-->
-            <!--            <Scroller v-else ref="city_List">-->
-<!--            <div>-->
-                <div class="city_hot">
-                    <h2>热门城市</h2>
-                    <ul class="clearfix">
-                        <li v-for="item in hotList" :key="item.id"
-                            @tap="handleToCity(item.nm, item.id)">{{item.nm }}
-                        </li><!---->
-                    </ul>
-                </div>
-                <div class="city_sort" ref="city_sort">
-                    <!--                    <div>-->
-                    <!--                        <h2>A</h2>-->
-                    <!--                        <ul>-->
-                    <!--                            <li>阿拉善盟</li>-->
-                    <!--                            <li>鞍山</li>-->
-                    <!--                            <li>安庆</li>-->
-                    <!--                            <li>安阳</li>-->
-                    <!--                        </ul>-->
-                    <!--                    </div>-->
-
-                    <div v-for="item in cityList" :key="item.index">
-                        <h2>{{ item.index }}</h2>
-                        <ul>
-                            <li v-for="itemCity in item.list" :key="itemCity.id"
-                                @tap="handleToCity(itemCity.nm, itemCity.id)">{{ itemCity.nm }}
+            <loading v-if="isLoading"/>
+            <Scroller v-else ref="city_List">
+                <div>
+                    <div class="city_hot">
+                        <h2>热门城市</h2>
+                        <ul class="clearfix">
+                            <li v-for="item in hotList" :key="item.id" @tap="handleToCity(item.nm, item.id)"
+                            >{{item.nm }}
                             </li>
                         </ul>
                     </div>
+                    <div class="city_sort" ref="city_sort">
+                        <!--                    <div>-->
+                        <!--                        <h2>A</h2>-->
+                        <!--                        <ul>-->
+                        <!--                            <li>阿拉善盟</li>-->
+                        <!--                            <li>鞍山</li>-->
+                        <!--                            <li>安庆</li>-->
+                        <!--                            <li>安阳</li>-->
+                        <!--                        </ul>-->
+                        <!--                    </div>-->
 
+                        <div v-for="item in cityList" :key="item.index">
+                            <h2>{{ item.index }}</h2>
+                            <ul>
+                                <li v-for="itemCity in item.list" :key="itemCity.id" @tap="handleToCity(itemCity.nm, itemCity.id)"
+                                >{{ itemCity.nm }}
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
                 </div>
-            </div>
-            <!--            </Scroller>-->
-<!--        </div>-->
+            </Scroller>
+        </div>
         <div class="city_index">
             <ul>
                 <!--index是下标索引-->
@@ -54,31 +54,36 @@
         data() {
             return {
                 cityList: [],
-                hotList: []
+                hotList: [],
+                isLoading: true
             }
         },
         mounted() {  /*生命周期是函数，不是对象*/
-            this.axios.get('/api/cityList').then((res) => {
-                var msg = res.data.msg;
-                if (msg === 'ok') {
-                    var cities = res.data.data.cities;
-                    console.log(cities);
-                    // 将数据改造成下面这样
-                    // [   {index: 'A', list: [{nm: '阿城', id: 123}]},
-                    //     {index: 'B', list: [{nm: '北京', id: 343}]}
-                    // ]
-                    // let {cityList11, hotList11} = this.formatCityList(cities)
-                    // this.cityList = cityList11   这样为何不对？？？？
-                    // this.hotList = hotList11
+            var cityList = window.localStorage.getItem('cityList');
+            var hotList = window.localStorage.getItem('hotList');
 
-                    let {cityList, hotList} = this.formatCityList(cities)
-                    this.cityList = cityList
-                    this.hotList = hotList
+            if (cityList && hotList) {
+                this.cityList = JSON.parse(cityList)/*再解析回来*/
+                this.hotList = JSON.parse(hotList)
+                this.isLoading = false;
+            } else {
+                this.axios.get('/api/cityList').then((res) => {
+                    var msg = res.data.msg;
+                    if (msg === 'ok') {
+                        var cities = res.data.data.cities;
 
-                    window.localStorage.setItem('cityList', JSON.stringify(cityList))
-                    window.localStorage.setItem('hotList', JSON.stringify(hotList))
-                }
-            })
+                        let {cityList, hotList} = this.formatCityList(cities)
+                        this.cityList = cityList
+                        this.hotList = hotList
+
+                        this.isLoading = false;
+                        // 返回的是数组，但数组不能直接存，因为本地存储存的是字符串类型，
+                        // 所以为了不破坏结构需先用JSON.stringify转换一下
+                        window.localStorage.setItem('cityList', JSON.stringify(cityList))
+                        window.localStorage.setItem('hotList', JSON.stringify(hotList))
+                    }
+                });
+            }
         },
         methods: {
             formatCityList(cities) {
@@ -136,18 +141,24 @@
 
             handleToIndex(index) {
                 let h2 = this.$refs.city_sort.getElementsByTagName('h2')
-                this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop/*parentNode是city_list类*/
-                // this.$refs.city_List.toScrollTop(-h2[index].offsetTop)
+                // this.$refs.city_sort.parentNode.scrollTop = h2[index].offsetTop   /*parentNode是city_list类  原生方法*/
+                this.$refs.city_List.toScrollTop(-h2[index].offsetTop)
+                /*上面是better-scroll提供的方法，先通过refs拿到组件，然后就可以使用组件中的方法了
+                * 左右联动的组件实现，最典型的左右联动比如城市的选择，和右边英文字母的缩写；*/
             },
-
-            handleToCity(nm, id) {
-                console.log(nm)
-                console.log(id)
-                this.$store.commit('city/CITY_INFO', {nm, id})
-                window.localStorage.setItem('nowNm', nm)
-                window.localStorage.setItem('nowId', id)
-                this.$router.push('/movie/nowPlaying')
+            handleToCity(nm, id) {/*共享id和nm，通过该函数来搞定*/
+                // console.log(nm)
+                // console.log(id)
+                this.$store.commit('city/CITY_INFO', {nm, id})/*mutations 里面写的，不是异步，所以直接commit
+                                                            第一个参数为mutations里面的方法名，执行里面的方法，改变状态*/
+                window.localStorage.setItem('nowNm', nm)/*查看状态通过vue插件来看*/
+                window.localStorage.setItem('nowId', id)/*本地存储 在*/
+                this.$router.push('/movie/nowPlaying')/*用编程式路由跳转到指定页面*/
             }
+        //  @tap="handleToCity(item.nm, item.id)"  tap事件 点击触发、滑动不触发
+        // 点击某一个city，执行handleToCity方法，先得到点击的city的nm和id，将该nm和id送到状态管理stores下的city状态管理中，
+        // 通过commit来执行mutations中状态修改方法，改变状态；将得到的nm和id存储到本地，让状态中的nm和id在本地有的情况下取
+        // 本地的值；通过this.$router.push跳转到指定页面
         }
         // formatCityList();
     }
