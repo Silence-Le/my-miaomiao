@@ -53,9 +53,9 @@
                     let nm = res.data.data.nm;
                     let id = res.data.data.id;
                     if (msg === 'ok') {
-                        // console.log(typeof(this.$store.state.city.id))   /* String类型，需要转一下或者用==*/
-                        // console.log(typeof(id))  /*number类型*/
-                        // if (this.$store.state.city.id == id){return ;}/*若当前城市与状态管理中的城市一样则不要弹窗！！*/
+                        console.log(typeof(this.$store.state.city.id))   /* String类型，需要转一下或者用==*/
+                        console.log(typeof(id))  /*number类型*/
+                        if (this.$store.state.city.id == id){return ;}/*若当前城市与状态管理中的城市一样则不要弹窗！！*/
                         messageBox({  /*messageBox 方法*/
                             title: '定位',
                             content:nm,
