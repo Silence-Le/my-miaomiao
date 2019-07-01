@@ -1,55 +1,59 @@
 <template>
     <div class="movie_body">
-        <!--        <loading v-if="isLoading" />-->
-        <!--        <Scroller v-else>-->
-        <ul>
-            <!--                <li>-->
-            <!--                  <div class="pic_show">-->
-            <!--                    <img src="/images/movie_1.jpg">-->
-            <!--                  </div>-->
-            <!--                  <div class="info_list">-->
-            <!--                    <h2>无名之辈</h2>-->
-            <!--                    <p>-->
-            <!--                      <span class="person">17746</span> 人想看-->
-            <!--                    </p>-->
-            <!--                    <p>主演: 陈建斌,任素汐,潘斌龙</p>-->
-            <!--                    <p>2018-11-30上映</p>-->
-            <!--                  </div>-->
-            <!--                  <div class="btn_pre">预售</div>-->
-            <!--                </li>-->
-            <li v-for="item in comingList" :key="item.id">
-                <div class="pic_show">
-                    <img :src="item.img | setWH('128.180')">
-                </div>
-                <div class="info_list">
-                    <h2>{{item.nm}}</h2><img v-if="item.version" src="@/assets/maxs.png">
-                    <p>
-                        <span class="person">{{item.wish}}</span> 人想看
-                    </p>
-                    <p>主演: {{item.star}}</p>
-                    <p>{{item.showInfo}}</p>
-                </div>
-                <div class="btn_pre">预售</div>
-            </li>
+        <loading v-if="isLoading"/>
+        <Scroller v-else>
+            <!--        <Scroller>-->
+
+            <ul>
+                <!--                <li>-->
+                <!--                  <div class="pic_show">-->
+                <!--                    <img src="/images/movie_1.jpg">-->
+                <!--                  </div>-->
+                <!--                  <div class="info_list">-->
+                <!--                    <h2>无名之辈</h2>-->
+                <!--                    <p>-->
+                <!--                      <span class="person">17746</span> 人想看-->
+                <!--                    </p>-->
+                <!--                    <p>主演: 陈建斌,任素汐,潘斌龙</p>-->
+                <!--                    <p>2018-11-30上映</p>-->
+                <!--                  </div>-->
+                <!--                  <div class="btn_pre">预售</div>-->
+                <!--                </li>-->
+
+                <li v-for="item in comingList" :key="item.id">
+                    <div class="pic_show">
+                        <img :src="item.img | setWH('128.180')">
+                    </div>
+                    <div class="info_list">
+                        <h2 @tap="handleToDetail(item.id)">{{item.nm}}</h2><img v-if="item.version"
+                                                                                src="@/assets/maxs.png">
+                        <p>
+                            <span class="person">{{item.wish}}</span> 人想看
+                        </p>
+                        <p>主演: {{item.star}}</p>
+                        <p>{{item.showInfo}}</p>
+                    </div>
+                    <div class="btn_pre">预售</div>
+                </li>
 
 
-            <!--                <li v-for="item in comingList" :key="item.id">-->
-            <!--                    <div class="pic_show" @tap="handleToDetail(item.id)">-->
-            <!--                        <img :src="item.img | setWH('128.180')">-->
-            <!--                    </div>-->
-            <!--                    <div class="info_list">-->
-            <!--                        <h2 @tap="handleToDetail(item.id)">{{ item.nm }} <img v-if="item.version" src="@/assets/maxs.png"> </h2>-->
-            <!--                        <p>-->
-            <!--                            <span class="person">{{ item.wish }}</span> 人想看-->
-            <!--                        </p>-->
-            <!--                        <p>主演: {{ item.star }}</p>-->
-            <!--                        <p>{{ item.showInfo }}</p>-->
-            <!--                    </div>-->
-            <!--                    <div class="btn_pre">预售</div>-->
-            <!--                </li>-->
+                <!--                <li v-for="item in comingList" :key="item.id">-->
+                <!--                    <div class="pic_show" @tap="handleToDetail(item.id)">-->
+                <!--                        <img :src="item.img | setWH('128.180')">-->
+                <!--                    </div>-->
+                <!--                    <div class="info_list">-->
+                <!--                        <h2 @tap="handleToDetail(item.id)">{{ item.nm }} <img v-if="item.version" src="@/assets/maxs.png"> </h2>-->
+                <!--                        <p>-->
+                <!--                            <span class="person">{{ item.wish }}</span> 人想看-->
+                <!--                        </p>-->
+                <!--                        <p>主演: {{ item.star }}</p>-->
+                <!--                        <p>{{ item.showInfo }}</p>-->
+                <!--                    </div>-->
+                <!--                    <div class="btn_pre">预售</div>-->
+                <!--                </li>-->
 
-        </ul>
-        <!--        </Scroller>-->
+            </ul>
+        </Scroller>
     </div>
 
 </template>
@@ -59,17 +63,50 @@
         name: "ComingSoon",
         data() {
             return {
-                comingList: []
+                comingList: [],
+                pullDownMsg: '',
+                isLoading: true,
+                prevCityId:-1
+
             }
         },
-        mounted() {
-            this.axios.get('/api/movieComingList?cityId=10').then((res) => {
+        activated() {
+            let cityId = this.$store.state.city.id;
+            if (this.prevCityId === cityId) {return ;}
+            this.isLoading = true;
+            this.axios.get('/api/movieComingList?cityId=' + cityId).then((res) => {
                 let msg = res.data.msg;
                 if (msg === 'ok') {
                     this.comingList = res.data.data.comingList;
+                    this.isLoading = false; /*此时数据请求成功，让Loading组件不再显示*/
+                    this.prevCityId = cityId;
                     console.log(this.comingList);
                 }
             });
+        },
+        methods: {
+            handleToDetail() {
+                console.log(111)
+            },
+            // handleToScroll(pos) {
+            //     if (pos.y > 30) {  //pos.y  向上拖拽的距离
+            //         this.pullDownMsg = '正在更新中';
+            //     }
+            // },
+            // handleToTouchEnd(pos) {
+            //     if (pos.y > 30) {  //pos.y  向上拖拽的距离
+            //         this.axios.get('/api/movieOnInfoList?CityId=12').then((res) => {
+            //             let msg = res.data.msg;
+            //             if (msg === 'ok') {
+            //                 this.pullDownMsg = '更新成功';
+            //                 setTimeout(() => {
+            //                     this.movieList = res.data.data.movieList;
+            //                     this.pullDownMsg = '';
+            //                 }, 1000)
+            //             }
+            //         });
+            //     }
+            // }
         }
     }
 </script>

@@ -81,18 +81,18 @@
                 // 取消上一次请求
                 this.cancelRequest();
 
-                var that = this;
-
-                this.axios.get('/api/searchList?cityId=10&kw=' + newVal, {
+                let that = this;
+                let cityId = this.$store.state.city.id;   /*状态管理中的id*/
+                this.axios.get('/api/searchList?cityId=' + cityId +'&kw=' + newVal, {
                     cancelToken: new this.axios.CancelToken(function (c) {
                         console.log(111)
                         that.source = c;
                     })/*在请求结束之前会触发cancelToken*/
                 }).then((res) => {
                     // 在这里处理得到的数据
-                    var msg = res.data.msg;
+                    let msg = res.data.msg;
                     console.log(res);
-                    var movies = res.data.data.movies;
+                    let movies = res.data.data.movies;
                     if (msg && movies) {
                         this.moviesList = movies.list;
                     }
