@@ -1,7 +1,7 @@
 <template>
     <header id="header">
 <!--        <h1>我的喵喵影院</h1>-->
-        <h1>{{title}}</h1>
+        <slot></slot> <h1>{{title}}</h1>  <!--slot，插槽组件？？？？-->
     </header>
 </template>
 

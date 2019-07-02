@@ -59,15 +59,14 @@
             }
         },
         activated() {
-
             let cityId = this.$store.state.city.id;
             let cityNm = this.$store.state.city.nm;
             if (this.prevCityId === cityId) {return;}
             else {
                 this.isLoading = true;
-                console.log(111);
+                // console.log(111);
                 this.axios.get('/api/movieOnInfoList?CityId=' + cityId).then((res) => {
-                    console.log(cityId + ' ' + cityNm)
+                    console.log('状态管理中的城市id及城市名为  ' + cityId + ' ' + cityNm)
                     let msg = res.data.msg;
                     if (msg === 'ok') {
                         this.movieList = res.data.data.movieList
@@ -109,8 +108,9 @@
             }
         },
         methods: {
-            handleToDetail() {
-                console.log(111)
+            handleToDetail(movieId) {  /*点击某一电影后拿到其id然后要创建一个动态路由*/
+                console.log('点击的id为：' + movieId + '  现在进入详情页面')
+                this.$router.push('/movie/detail/1/'+ movieId)  /*路由跳转 该路由下*/
             },
             handleToScroll(pos) {
                 if (pos.y > 30) {  //pos.y  向上拖拽的距离
