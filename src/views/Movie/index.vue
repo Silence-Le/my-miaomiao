@@ -23,17 +23,18 @@
             </div>
 
             <keep-alive>
-                <router-view></router-view><!--上面渲染到的路由将匹配到这里 二级路由渲染-->
+                <router-view/><!--上面渲染到的路由将匹配到这里 二级路由渲染-->
             </keep-alive>
-
         </div>
         <TabBar/>
 <!--        <MessageBox />&lt;!&ndash;绝对定位了的盒子&ndash;&gt;-->
+        <router-view name="detail"/>
     </div>
 </template>
 <script>
     import Header from '@/components/Header'
     import TabBar from '@/components/TabBar'
+    // import Detial from 'detail.vue'
     // import MessageBox from '@/components/JS/MessageBox'
     import {messageBox} from '@/components/JS' /*@/compontents/JS/index*/
     export default {
@@ -41,20 +42,21 @@
         components: {
             Header,
             TabBar,
-            // MessageBox
+            // MessageBox,
+            // Detial
         },
         mounted() {
             //什么时候调弹窗？Ajax请求成功后！定位原理：后台调用的是一些现成的定位的API，如百度的定位系统 都有这个功能
             setTimeout(() => {  /*将下面的包裹在setTimeout中，目的是做一个延时*/
                 this.axios.get('/api/getLocation').then((res) => {
-                    console.log('_________')
-                    console.log(res)
+                    console.log('2秒后弹窗的情况_________________________')
+                    // console.log(res)   /*本地位置信息*/
                     let msg = res.data.msg;
                     let nm = res.data.data.nm;
                     let id = res.data.data.id;
                     if (msg === 'ok') {
-                        console.log(typeof(this.$store.state.city.id))   /* String类型，需要转一下或者用==*/
-                        console.log(typeof(id))  /*number类型*/
+                        // console.log(typeof(this.$store.state.city.id))   /* String类型，需要转一下或者用==*/
+                        // console.log(typeof(id))  /*number类型*/
                         if (this.$store.state.city.id == id){return ;}/*若当前城市与状态管理中的城市一样则不要弹窗！！*/
                         messageBox({  /*messageBox 方法*/
                             title: '定位',
@@ -73,7 +75,7 @@
                         })
                     }
                 });
-            },3000);
+            },2000);
         }
     }
 </script>

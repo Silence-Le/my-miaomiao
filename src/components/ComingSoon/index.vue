@@ -67,7 +67,6 @@
                 pullDownMsg: '',
                 isLoading: true,
                 prevCityId:-1
-
             }
         },
         activated() {
@@ -85,8 +84,9 @@
             });
         },
         methods: {
-            handleToDetail() {
-                console.log(111)
+            handleToDetail(movieId) {  /*点击某一电影后拿到其id然后要创建一个动态路由*/
+                console.log('点击的id为：' + movieId + '  现在进入详情页面')
+                this.$router.push('/movie/detail/2/'+ movieId)  /*路由跳转 该路由下*/
             },
             // handleToScroll(pos) {
             //     if (pos.y > 30) {  //pos.y  向上拖拽的距离
