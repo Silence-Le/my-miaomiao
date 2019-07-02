@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
@@ -11,12 +11,24 @@
     <link rel="stylesheet" href="<%= BASE_URL %>libs/swiper-4.1.0.min.css">
     <script src="<%= BASE_URL %>libs/swiper-4.1.0.min.js"></script>
     <title>my-miaomiao</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but my-miaomiao doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+</head>
+<body>
+<noscript>
+    <strong>We're sorry but my-miaomiao doesn't work properly without JavaScript enabled. Please enable it to
+        continue.</strong>
+</noscript>
+<style>  /*body里面？？？？*/
+    #app {
+        display: flex;
+        height: 100%; /*#app盒子本身没有高度*/
+    }
+    #app div {
+        margin:auto;/*上下左右居中*/
+    }
+</style>
+<div id="app">
+    <div>我的喵喵网正在加载中~~</div>  <!--也可以换为一个图片-->
+</div>
+<!-- built files will be auto injected -->
+</body>
 </html>

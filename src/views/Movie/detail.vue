@@ -44,6 +44,7 @@
             <!--            </div>-->
 
             <div class="detail_list">
+                <!--在:style中不支持过滤器的写法，需要自己写-->
                 <div class="detail_list_bg"
                      :style="{ 'background-image': 'url('+detailMovie.img.replace(/w\.h/,'148.208')+')' }"></div>
                 <div class="detail_list_filter"></div>
@@ -70,8 +71,6 @@
                         <div>
                             <img :src="item | setWH('140.127')" alt="">
                         </div>
-                        <!-- <p>陈建斌</p>
-                        <p>马先勇</p> -->
                     </li>
                 </ul>
             </div>
@@ -164,14 +163,15 @@
         height: 200px;
         width: 100%;
         position: relative;
-        overflow: hidden;
+        overflow: hidden;  /*消除.detail_list_bg扩展的边缘*/
     }
-
+    /*注意：CSS使用filter: blur(20px);实现高斯模糊效果，周边会出现扩展的白边；
+    解决方案： 对父元素设置overflow: hidden; 隐藏即可。*/
     .detail_list .detail_list_bg {
         width: 100%;
         height: 100%;
         background: 0 40%;
-        filter: blur(20px);
+        filter: blur(20px);  /* 设置高斯模糊 */
         background-size: cover;
         position: absolute;
         left: 0;

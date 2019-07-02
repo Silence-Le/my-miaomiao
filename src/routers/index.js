@@ -11,7 +11,8 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
-  base: process.env.BASE_URL,
+  base: process.env.BASE_URL,  /*基础的路由根路径*/
+
   routes: [
     movieRouter,/*这三个是一级路由，二级路由分别在他们里面做，用children来配置*/
     mineRouter,
